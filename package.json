@@ -1,0 +1,22 @@
+{
+  "name": "byob-monorepo",
+  "private": true,
+  "version": "0.1.0",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "npm run -ws build",
+    "dev": "npm run -ws --if-present dev",
+    "start": "npm run -ws --if-present start",
+    "lint": "npm run -ws --if-present lint",
+    "format": "npm run -ws --if-present format",
+    "db:generate": "npm --workspace @byob/db run prisma:generate",
+    "db:migrate": "npm --workspace @byob/db run prisma:migrate",
+    "db:seed": "npm --workspace @byob/db run db:seed"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}
