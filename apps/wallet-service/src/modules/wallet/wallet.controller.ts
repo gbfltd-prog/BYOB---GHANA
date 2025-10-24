@@ -17,6 +17,9 @@ export class WalletController {
   @Post('payouts')
   payout(@Req() req: any, @Body() body: { amount: number; }) { return this.service.requestPayout(req.user.id, body.amount); }
 
+  @Get('payouts')
+  listPayouts(@Req() req: any) { return this.service.listPayouts(req.user.id); }
+
   @Post('payouts/:id/approve')
   approve(@Req() req: any, @Param('id') id: string) { return this.service.approvePayout(id, req.user.id, req.user.role); }
 

@@ -36,6 +36,12 @@ export class WalletService {
     });
   }
 
+  async listPayouts(userId: string) {
+    const wallet = await prisma.wallet.findUnique({ where: { userId } });
+    if (!wallet) throw new NotFoundException('Wallet not found');
+    return prisma.payoutRequest.findMany({ where: { walletId: wallet.id }, orderBy: { createdAt: 'desc' } });
+  }
+
   async approvePayout(payoutId: string, approverId: string, approverRole: string) {
     const payout = await prisma.payoutRequest.findUnique({ where: { id: payoutId } });
     if (!payout) throw new NotFoundException('Payout not found');

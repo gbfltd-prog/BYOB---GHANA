@@ -61,6 +61,9 @@ model AgentProfile {
   userId        String   @unique
   supervisorId  String?
   supervisor    User?    @relation("SupervisorAgents", fields: [supervisorId], references: [id])
+  storefrontColor String? // hex color
+  storefrontBannerUrl String?
+  storefrontSlogan String?
 }
 
 model ManufacturerProfile {
