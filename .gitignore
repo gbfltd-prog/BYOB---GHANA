@@ -1,0 +1,15 @@
+node_modules
+.pnpm-store
+.env*
+dist
+coverage
+.next
+.expo
+.expo-shared
+*.log
+tmp
+.eslintcache
+.idea
+.DS_Store
+package-lock.json
+yarn.lock

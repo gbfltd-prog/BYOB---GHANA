@@ -1,0 +1,21 @@
+{
+  "name": "byob-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "packageManager": "pnpm@9.12.1",
+  "scripts": {
+    "build": "pnpm -r run build",
+    "dev": "pnpm -r --parallel run dev",
+    "lint": "pnpm -r run lint",
+    "test": "pnpm -r run test",
+    "seed": "ts-node --project tsconfig.base.json scripts/seed.ts",
+    "prisma:generate": "pnpm --filter @byob/prisma exec prisma generate"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.30",
+    "bcryptjs": "^2.4.3",
+    "rimraf": "^5.0.5",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.4.5"
+  }
+}
