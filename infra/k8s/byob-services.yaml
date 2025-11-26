@@ -1,0 +1,323 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: byob
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: byob-config
+  namespace: byob
+data:
+  DATABASE_URL: postgres://byob:byob@postgres.byob:5432/byob
+  JWT_SECRET: super-secret
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: auth-service
+  namespace: byob
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: auth-service
+  template:
+    metadata:
+      labels:
+        app: auth-service
+    spec:
+      containers:
+        - name: auth-service
+          image: ghcr.io/klloyds/byob-auth:latest
+          ports:
+            - containerPort: 3001
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: auth-service
+  namespace: byob
+spec:
+  selector:
+    app: auth-service
+  ports:
+    - port: 80
+      targetPort: 3001
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: product-service
+  namespace: byob
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+        - name: product-service
+          image: ghcr.io/klloyds/byob-product:latest
+          ports:
+            - containerPort: 3002
+          env:
+            - name: SHARE_BASE_URL
+              value: https://byob.africa/p
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: product-service
+  namespace: byob
+spec:
+  selector:
+    app: product-service
+  ports:
+    - port: 80
+      targetPort: 3002
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: order-service
+  namespace: byob
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: order-service
+  template:
+    metadata:
+      labels:
+        app: order-service
+    spec:
+      containers:
+        - name: order-service
+          image: ghcr.io/klloyds/byob-order:latest
+          ports:
+            - containerPort: 3003
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: order-service
+  namespace: byob
+spec:
+  selector:
+    app: order-service
+  ports:
+    - port: 80
+      targetPort: 3003
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: warehouse-service
+  namespace: byob
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: warehouse-service
+  template:
+    metadata:
+      labels:
+        app: warehouse-service
+    spec:
+      containers:
+        - name: warehouse-service
+          image: ghcr.io/klloyds/byob-warehouse:latest
+          ports:
+            - containerPort: 3004
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: warehouse-service
+  namespace: byob
+spec:
+  selector:
+    app: warehouse-service
+  ports:
+    - port: 80
+      targetPort: 3004
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wallet-service
+  namespace: byob
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: wallet-service
+  template:
+    metadata:
+      labels:
+        app: wallet-service
+    spec:
+      containers:
+        - name: wallet-service
+          image: ghcr.io/klloyds/byob-wallet:latest
+          ports:
+            - containerPort: 3005
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: wallet-service
+  namespace: byob
+spec:
+  selector:
+    app: wallet-service
+  ports:
+    - port: 80
+      targetPort: 3005
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: chat-service
+  namespace: byob
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: chat-service
+  template:
+    metadata:
+      labels:
+        app: chat-service
+    spec:
+      containers:
+        - name: chat-service
+          image: ghcr.io/klloyds/byob-chat:latest
+          ports:
+            - containerPort: 3006
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: chat-service
+  namespace: byob
+spec:
+  selector:
+    app: chat-service
+  ports:
+    - port: 80
+      targetPort: 3006
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: employability-service
+  namespace: byob
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: employability-service
+  template:
+    metadata:
+      labels:
+        app: employability-service
+    spec:
+      containers:
+        - name: employability-service
+          image: ghcr.io/klloyds/byob-employability:latest
+          ports:
+            - containerPort: 3007
+          envFrom:
+            - configMapRef:
+                name: byob-config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: employability-service
+  namespace: byob
+spec:
+  selector:
+    app: employability-service
+  ports:
+    - port: 80
+      targetPort: 3007
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: file-service
+  namespace: byob
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: file-service
+  template:
+    metadata:
+      labels:
+        app: file-service
+    spec:
+      containers:
+        - name: file-service
+          image: ghcr.io/klloyds/byob-file:latest
+          ports:
+            - containerPort: 3008
+          env:
+            - name: MINIO_ENDPOINT
+              value: minio.byob
+            - name: MINIO_PORT
+              value: "9000"
+            - name: MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: access
+            - name: MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: minio-secrets
+                  key: secret
+            - name: MINIO_BUCKET
+              value: byob
+            - name: JWT_SECRET
+              valueFrom:
+                configMapKeyRef:
+                  name: byob-config
+                  key: JWT_SECRET
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: file-service
+  namespace: byob
+spec:
+  selector:
+    app: file-service
+  ports:
+    - port: 80
+      targetPort: 3008
